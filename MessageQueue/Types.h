@@ -1,6 +1,6 @@
 
-#ifndef Extensions_MQ_Types_h
-#define Extensions_MQ_Types_h
+#ifndef MessageQueue_Types_h
+#define MessageQueue_Types_h
 
 
 // Library includes

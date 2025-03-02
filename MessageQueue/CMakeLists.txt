@@ -1,14 +1,14 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-    MQExtension.cpp
+    Extension.cpp
     Types.cpp
 )
 
 SET(HEADERS
     Defines.h
+    Extension.h
     MQClose.h
-    MQExtension.h
     MQOpen.h
     MQReceive.h
     MQSend.h
@@ -25,5 +25,4 @@ SET(MODULES
 
 add_include(Externals)
 
-build_shared_lib(SlangSystemVMQ "${MODULES}")
-
+build_shared_lib(SlangExtMQ "${MODULES}")

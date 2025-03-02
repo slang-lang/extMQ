@@ -1,6 +1,6 @@
 
-#ifndef Extensions_MQSend_h
-#define Extensions_MQSend_h
+#ifndef MessageQueue_MQSend_h
+#define MessageQueue_MQSend_h
 
 
 // Library includes
@@ -11,7 +11,6 @@
 // Forward declarations
 
 // Namespace declarations
-using namespace Slang;
 
 
 namespace MQ {

@@ -1,6 +1,6 @@
 
 // Header
-#include "MQExtension.h"
+#include "Extension.h"
 
 // Library includes
 
@@ -16,23 +16,23 @@
 namespace MQ {
 
 
-MQExtension::MQExtension()
-: AExtension( "SystemV-MQ", "0.1.1" )
+Extension::Extension()
+: AExtension( "extMQ", "0.2.0" )
 {
 	// initialize pipes
-	mMQs[0];
+	mMQs[0] = 0;
 }
 
-void MQExtension::initialize( Slang::Extensions::ExtensionNamespace* scope )
+void Extension::initialize( Extensions::ExtensionNamespace* scope )
 {
-	//std::cout << "MQExtension::initialize()" << std::endl;
+	//std::cout << "Extension::initialize()" << std::endl;
 
 	(void)scope;
 
 	// global vars/consts currently don't work for extensions :-(
 }
 
-void MQExtension::provideMethods( Slang::Extensions::ExtensionMethods& methods )
+void Extension::provideMethods( Extensions::ExtensionMethods& methods )
 {
 	methods.push_back( new MQClose() );
 	methods.push_back( new MQOpenByID() );
@@ -45,7 +45,6 @@ void MQExtension::provideMethods( Slang::Extensions::ExtensionMethods& methods )
 }
 
 
-extern "C" Slang::Extensions::AExtension* factory( void ) {
-	return dynamic_cast<Slang::Extensions::AExtension*>( new MQ::MQExtension() );
+extern "C" Extensions::AExtension* factory( void ) {
+	return dynamic_cast<Extensions::AExtension*>( new MQ::Extension() );
 }
-
