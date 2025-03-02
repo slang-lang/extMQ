@@ -37,16 +37,16 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
-			bool param_wait = (*it++).value().toBool();
+			auto param_handle = (*it++).value().toInt();
+			auto param_wait   = (*it++).value().toBool();
 
 			std::string method_result;
 			if ( param_handle > 0 && param_handle < (int)mMQs.size() ) {
-				int& queue = mMQs[param_handle];
+				auto& queue = mMQs[param_handle];
 
 				struct Message_t message;
 
-				int msgflg = (param_wait ? 0 : IPC_NOWAIT);
+				auto msgflg = (param_wait ? 0 : IPC_NOWAIT);
 				if ( msgrcv(queue, &message, sizeof message.mText, 0, msgflg) != -1 ) {
 					method_result = std::string(message.mText );
 				}

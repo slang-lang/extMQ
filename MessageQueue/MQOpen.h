@@ -38,13 +38,13 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			int param_id = (*it++).value().toInt();
-			//int param_mode = (*it++).value().toInt();
-			bool param_create = (*it++).value().toBool();
+			auto param_id     = (*it++).value().toInt();
+			//auto param_mode   = (*it++).value().toInt();
+			auto param_create = (*it++).value().toBool();
 
-			size_t queue_handle = mMQs.size();
-			int& queue = mMQs[queue_handle] = -1;
-			key_t key = param_id;
+			auto queue_handle = mMQs.size();
+			auto& queue       = mMQs[queue_handle] = -1;
+			key_t key         = param_id;
 
 			queue = msgget(key, 0666 | (param_create ? IPC_CREAT : 0));
 
@@ -88,12 +88,12 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_name = (*it++).value().toStdString();
-			//int param_mode = (*it++).value().toInt();
-			bool param_create = (*it++).value().toBool();
+			auto param_name   = (*it++).value().toStdString();
+			//auto param_mode   = (*it++).value().toInt();
+			auto param_create = (*it++).value().toBool();
 
-			size_t queue_handle = mMQs.size();
-			int& queue = mMQs[queue_handle] = -1;
+			auto queue_handle = mMQs.size();
+			auto& queue       = mMQs[queue_handle] = -1;
 			key_t key;
 
 			if ( (key = ftok(param_name.c_str(), 'B')) != -1 ) {

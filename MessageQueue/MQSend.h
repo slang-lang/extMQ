@@ -37,12 +37,12 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
-			std::string param_message = (*it++).value().toStdString();
+			auto param_handle  = (*it++).value().toInt();
+			auto param_message = (*it++).value().toStdString();
 
 			int method_result = 0;
 			if ( param_handle > 0 && param_handle < (int)mMQs.size() ) {
-				int& queue = mMQs[param_handle];
+				auto& queue = mMQs[param_handle];
 
 				struct Message_t message;
 				message.mType = 1;
