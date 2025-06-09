@@ -1,4 +1,4 @@
-slang-mq (0.9.3) noble; urgency=medium
+slang-mq (0.2.1) noble; urgency=medium
 
   * Refactored debian package structure
 
