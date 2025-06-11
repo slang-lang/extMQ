@@ -9,4 +9,5 @@ PROJECT(extMQ)
 
 INCLUDE(CMake/Base.cmake)
 
-ADD_SUBDIRECTORY(MessageQueue)
+ADD_SUBDIRECTORY(Extension)
+
