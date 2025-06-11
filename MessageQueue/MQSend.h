@@ -30,42 +30,33 @@ public:
 	}
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_handle  = (*it++).value().toInt();
-			auto param_message = (*it++).value().toStdString();
+		auto param_handle  = (*it++).value().toInt();
+		auto param_message = (*it++).value().toStdString();
 
-			int method_result = 0;
-			if ( param_handle > 0 && param_handle < (int)mMQs.size() ) {
-				auto& queue = mMQs[param_handle];
+		int method_result = 0;
+		if ( param_handle > 0 && param_handle < (int)mMQs.size() ) {
+			auto& queue = mMQs[param_handle];
 
-				struct Message_t message;
-				message.mType = 1;
+			struct Message_t message;
+			message.mType = 1;
 
-				if ( param_message.size() >= 512 ) {
-					param_message.resize(512);
-				}
-
-				snprintf(message.mText, param_message.size(), "%s", param_message.c_str());
-				message.mText[param_message.size()] = '\0';
-
-				method_result = msgsnd(queue, &message, param_message.size() + 1, 0);
+			if ( param_message.size() >= 512 ) {
+				param_message.resize(512);
 			}
 
-			*result = Runtime::Int32Type( method_result );
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
+			snprintf(message.mText, param_message.size(), "%s", param_message.c_str());
+			message.mText[param_message.size()] = '\0';
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
+			method_result = msgsnd(queue, &message, param_message.size() + 1, 0);
 		}
+
+		*result = Runtime::Int32Type( method_result );
 
 		return Runtime::ControlFlow::Normal;
 	}

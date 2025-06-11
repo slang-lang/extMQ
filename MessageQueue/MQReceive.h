@@ -30,37 +30,28 @@ public:
 	}
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_handle = (*it++).value().toInt();
-			auto param_wait   = (*it++).value().toBool();
+		auto param_handle = (*it++).value().toInt();
+		auto param_wait   = (*it++).value().toBool();
 
-			std::string method_result;
-			if ( param_handle > 0 && param_handle < (int)mMQs.size() ) {
-				auto& queue = mMQs[param_handle];
+		std::string method_result;
+		if ( param_handle > 0 && param_handle < (int)mMQs.size() ) {
+			auto& queue = mMQs[param_handle];
 
-				struct Message_t message;
+			struct Message_t message;
 
-				auto msgflg = (param_wait ? 0 : IPC_NOWAIT);
-				if ( msgrcv(queue, &message, sizeof message.mText, 0, msgflg) != -1 ) {
-					method_result = std::string(message.mText );
-				}
+			auto msgflg = (param_wait ? 0 : IPC_NOWAIT);
+			if ( msgrcv(queue, &message, sizeof message.mText, 0, msgflg) != -1 ) {
+				method_result = std::string(message.mText );
 			}
-
-			*result = Runtime::StringType( method_result );
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::StringType( method_result );
 
 		return Runtime::ControlFlow::Normal;
 	}
