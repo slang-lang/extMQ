@@ -31,36 +31,27 @@ public:
 	}
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_id     = (*it++).value().toInt();
-			//auto param_mode   = (*it++).value().toInt();
-			auto param_create = (*it++).value().toBool();
+		auto param_id     = (*it++).value().toInt();
+		//auto param_mode   = (*it++).value().toInt();
+		auto param_create = (*it++).value().toBool();
 
-			auto queue_handle = mMQs.size();
-			auto& queue       = mMQs[queue_handle] = -1;
-			key_t key         = param_id;
+		auto queue_handle = mMQs.size();
+		auto& queue       = mMQs[queue_handle] = -1;
+		key_t key         = param_id;
 
-			queue = msgget(key, 0666 | (param_create ? IPC_CREAT : 0));
+		queue = msgget(key, 0666 | (param_create ? IPC_CREAT : 0));
 
-			if ( queue == -1 ) {
-				queue_handle = 0;
-			}
-
-			*result = Runtime::Int32Type( static_cast<int>(queue_handle) );
+		if ( queue == -1 ) {
+			queue_handle = 0;
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::Int32Type( static_cast<int>(queue_handle) );
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -81,38 +72,29 @@ public:
 	}
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_name   = (*it++).value().toStdString();
-			//auto param_mode   = (*it++).value().toInt();
-			auto param_create = (*it++).value().toBool();
+		auto param_name   = (*it++).value().toStdString();
+		//auto param_mode   = (*it++).value().toInt();
+		auto param_create = (*it++).value().toBool();
 
-			auto queue_handle = mMQs.size();
-			auto& queue       = mMQs[queue_handle] = -1;
-			key_t key;
+		auto queue_handle = mMQs.size();
+		auto& queue       = mMQs[queue_handle] = -1;
+		key_t key;
 
-			if ( (key = ftok(param_name.c_str(), 'B')) != -1 ) {
-				queue = msgget(key, 0666 | (param_create ? IPC_CREAT : 0));
-			}
-
-			if ( queue == -1 ) {
-				queue_handle = 0;
-			}
-
-			*result = Runtime::Int32Type( static_cast<int>(queue_handle) );
+		if ( (key = ftok(param_name.c_str(), 'B')) != -1 ) {
+			queue = msgget(key, 0666 | (param_create ? IPC_CREAT : 0));
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
+		if ( queue == -1 ) {
+			queue_handle = 0;
 		}
+
+		*result = Runtime::Int32Type( static_cast<int>(queue_handle) );
 
 		return Runtime::ControlFlow::Normal;
 	}
