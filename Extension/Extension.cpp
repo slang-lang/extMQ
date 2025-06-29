@@ -3,6 +3,7 @@
 #include "Extension.h"
 
 // Library includes
+#include <cassert>
 
 // Project includes
 #include "MQClose.h"
@@ -34,6 +35,8 @@ void Extension::initialize( Extensions::ExtensionNamespace* scope )
 
 void Extension::provideMethods( Extensions::ExtensionMethods& methods )
 {
+	assert( methods.empty() );
+
 	methods.push_back( new MQClose() );
 	methods.push_back( new MQOpenByID() );
 	methods.push_back( new MQOpenByName() );
