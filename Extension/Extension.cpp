@@ -18,7 +18,7 @@ namespace MQ {
 
 
 Extension::Extension()
-: AExtension( "extMQ", "0.3.0" )
+: AExtension( "extMQ", "0.3.1" )
 {
 	// initialize pipes
 	mMQs[0] = 0;
